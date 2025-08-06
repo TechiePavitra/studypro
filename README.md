@@ -7,7 +7,7 @@
 </strong>
 
 <p align="center">
-  ✨ A modern, clean, and open-source Class 12 Gujarati Medium Question Paper Generator and Manager built with Python, HTML, CSS, and JavaScript.
+  ✨ A modern program for studies, this program helps students for their preparation, clean, and open-source Class 12 Gujarati Medium Question Paper Generator and Manager built with Python, HTML, CSS, and JavaScript.
 </p>
 
 ##
@@ -23,6 +23,7 @@
 
 
 ## 📁 Folder Structure
+```
 studypro/
 ├── index.html
 ├── style.css
@@ -31,7 +32,7 @@ studypro/
 ├── app.js
 ├── questionmanager.html
 └── papergenerator.html
-
+```
 ---
 
 ## 🚀 How to Use
