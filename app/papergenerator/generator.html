@@ -1,19 +1,52 @@
 <style>
-  /* style.css */
-button {
-  background-color: #008cff;
-  color: white;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #e0e5ec;
+}
+
+.container {
+  max-width: 960px;
+  margin: 40px auto;
+  background: #e0e5ec;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 20px 20px 60px #c1c6cc, -20px -20px 60px #ffffff;
+  text-align: center;
+}
+
+.logo {
+  width: 80px;
+}
+
+.nav-buttons button {
+  margin: 10px;
   padding: 10px 20px;
-  border-radius: 8px;
   border: none;
+  border-radius: 15px;
+  background: #e0e5ec;
+  box-shadow: 5px 5px 10px #c1c6cc, -5px -5px 10px #ffffff;
   cursor: pointer;
-  font-size: 16px;
 }
 
-select, input[type="checkbox"] {
-  margin: 5px;
+.nav-buttons button:hover {
+  background-color: #d4d9df;
 }
 
+.tab-area {
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 20px;
+  background: #e0e5ec;
+  box-shadow: inset 10px 10px 30px #c1c6cc, inset -10px -10px 30px #ffffff;
+}
+
+footer {
+  margin-top: 30px;
+  font-size: 14px;
+  color: #555;
+}
 </style> 
 
 <h2>Generate Question Paper</h2>
@@ -50,6 +83,7 @@ function generatePaper() {
   preview.innerHTML = `<h3>📄 Generated Paper</h3><p>Subject: ${subject}</p><p>Sections: ${sections.join(', ')}</p>`;
 }
 </script>
+
 
 
 
