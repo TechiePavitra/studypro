@@ -7,7 +7,7 @@
 </strong>
 
 <p align="center">
-  ✨ A modern, clean, and open-source Class 12 Gujarati Medium Question Paper Generator and Manager built with HTML, CSS, and JavaScript.
+  ✨ A modern, clean, and open-source Class 12 Gujarati Medium Question Paper Generator and Manager built with Python, HTML, CSS, and JavaScript.
 </p>
 
 ##
