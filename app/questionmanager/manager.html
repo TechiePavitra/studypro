@@ -1,0 +1,37 @@
+<!-- app/questionmanager/manager.html -->
+<div class="manager-container">
+  <h2>📚 Question Manager</h2>
+
+  <div class="section-selector neumorphic">
+    <label for="subject">Subject:</label>
+    <select id="subject"></select>
+
+    <label for="section">Section:</label>
+    <select id="section"></select>
+
+    <button onclick="loadQuestions()" class="neumorphic-button">Load Questions</button>
+  </div>
+
+  <div class="question-form neumorphic">
+    <textarea id="questionText" placeholder="Enter your question here"></textarea>
+
+    <select id="questionType">
+      <option value="paragraph">Paragraph</option>
+      <option value="short-note">Short Note</option>
+      <option value="mcq">MCQ</option>
+      <option value="case-study">Case Study</option>
+    </select>
+
+    <select id="rarity">
+      <option value="important">Important</option>
+      <option value="rarely">Rarely</option>
+      <option value="sometimes">Sometimes</option>
+    </select>
+
+    <input type="number" id="marks" placeholder="Marks" min="1" />
+
+    <button onclick="addQuestion()" class="neumorphic-button">➕ Add Question</button>
+  </div>
+
+  <div id="questionList" class="neumorphic-list"></div>
+</div>
