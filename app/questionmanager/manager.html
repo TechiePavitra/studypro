@@ -1,10 +1,23 @@
 <!-- app/questionmanager/manager.html -->
-<head>
-<link rel="stylesheet" href="../../style.css">
-</head>
   <div class="manager-container">
   <h2>📚 Question Manager</h2>
+<style>
+  /* style.css */
+button {
+  background-color: #008cff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
 
+select, input[type="checkbox"] {
+  margin: 5px;
+}
+
+</style>
   <div class="section-selector neumorphic">
     <label for="subject">Subject:</label>
     <select id="subject"></select>
@@ -38,6 +51,7 @@
 
   <div id="questionList" class="neumorphic-list"></div>
 </div>
+
 
 
 
