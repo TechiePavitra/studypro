@@ -9,8 +9,10 @@ function loadTab(tabPath) {
     return;
   }
 
-  // Use absolute path including repo name to load from GitHub Pages
-  fetch('/studypro/app/' + tabPath)
+  // Build full path for GitHub Pages (relative to index.html)
+  const fullPath = `app/${tabPath}`;
+
+  fetch(fullPath)
     .then(res => {
       if (!res.ok) throw new Error("HTTP " + res.status);
       return res.text();
