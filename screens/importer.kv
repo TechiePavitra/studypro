@@ -1,0 +1,95 @@
+<ImporterScreen>:
+    name: "importer"
+
+    BoxLayout:
+        orientation: "vertical"
+
+        MDTopAppBar:
+            title: "PDF Question Importer"
+            elevation: 4
+            left_action_items: [["menu", lambda x: app.root.ids.nav_drawer.set_state("toggle")]]
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: "vertical"
+                padding: "20dp"
+                spacing: "12dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                MDRaisedButton:
+                    text: "Toggle Theme"
+                    on_release: app.toggle_dark_mode()
+
+                MDLabel:
+                    text: "Subject:"
+                MDTextField:
+                    id: subject_input
+                    hint_text: "e.g. economics, computer"
+
+                MDLabel:
+                    text: "Section:"
+                MDTextField:
+                    id: section_input
+                    hint_text: "A / B / C / D / E"
+
+                MDLabel:
+                    text: "Rarity:"
+                MDTextField:
+                    id: rarity_input
+                    hint_text: "most imp / sometimes / rarely"
+
+                MDLabel:
+                    text: "Question Type:"
+                MDTextField:
+                    id: type_input
+                    hint_text: "mcq / paragraph / diagram"
+
+                MDRaisedButton:
+                    text: "Upload PDF"
+                    on_release: app.upload_pdf()
+
+                MDTextField:
+                    id: text_preview
+                    hint_text: "Extracted questions will appear here..."
+                    multiline: True
+                    size_hint_y: None
+                    height: "200dp"
+
+                MDLabel:
+                    text: "MCQ Options:"
+                    bold: True
+                MDTextField:
+                    id: option_a
+                    hint_text: "(A)"
+                MDTextField:
+                    id: option_b
+                    hint_text: "(B)"
+                MDTextField:
+                    id: option_c
+                    hint_text: "(C)"
+                MDTextField:
+                    id: option_d
+                    hint_text: "(D)"
+
+                MDRaisedButton:
+                    text: "Save to CSV"
+                    on_release: app.save_to_csv()
+
+                MDLabel:
+                    text: "Saved Questions:"
+                    bold: True
+
+                ScrollView:
+                    MDList:
+                        id: question_list
+
+                MDBoxLayout:
+                    spacing: "12dp"
+                    MDRaisedButton:
+                        text: "Update Selected"
+                        on_release: app.update_selected_question()
+
+                    MDRaisedButton:
+                        text: "Delete Selected"
+                        on_release: app.delete_selected_question()
