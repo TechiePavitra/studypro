@@ -1,0 +1,53 @@
+MDNavigationLayout:
+
+    ScreenManager:
+        id: screen_manager
+
+        HomeScreen:
+        GeneratorScreen:
+        ImporterScreen:
+
+    MDNavigationDrawer:
+        id: nav_drawer
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: "8dp"
+            spacing: "8dp"
+
+            Image:
+                source: "assets/icon.png"
+                size_hint: None, None
+                size: "120dp", "120dp"
+                pos_hint: {"center_x": 0.5}
+
+            MDLabel:
+                text: "StudyPro"
+                font_style: "H5"
+                halign: "center"
+
+            ScrollView:
+                MDList:
+                    OneLineIconListItem:
+                        text: "Home"
+                        on_press:
+                            screen_manager.current = "home"
+                            nav_drawer.set_state("close")
+                        IconLeftWidget:
+                            icon: "home"
+
+                    OneLineIconListItem:
+                        text: "Generate Paper"
+                        on_press:
+                            screen_manager.current = "generator"
+                            nav_drawer.set_state("close")
+                        IconLeftWidget:
+                            icon: "file-document-edit"
+
+                    OneLineIconListItem:
+                        text: "Import Questions"
+                        on_press:
+                            screen_manager.current = "importer"
+                            nav_drawer.set_state("close")
+                        IconLeftWidget:
+                            icon: "file-import"
