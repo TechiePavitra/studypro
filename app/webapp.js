@@ -120,7 +120,6 @@ els.csvInput.addEventListener('change', (ev)=> {
 });
 
 function normalizeRow(row){
-  // ensure consistent keys and trim spaces
   return {
     question: (row.question||'').toString().trim(),
     type: (row.type||'paragraph').toString().trim(),
@@ -130,15 +129,28 @@ function normalizeRow(row){
   };
 }
 
-// CSV export - FIXED: build rows with explicit headers and UTF-8 BOM for Gujarati
-els.downloadCsvBtn.addEventListener('click', ()=> {
-  const headers = ['question','type','options','rarity','section'];
-  const rows = state.questions.map(q => headers.map(h => q[h] || '').join(','));
-  const csvBody = [headers.join(',')].concat(rows).join('\n');
-  // add BOM for Excel/Unicode compatibility
+// CSV export - MCQ-safe
+els.downloadCsvBtn.addEventListener('click', () => {
+  if (!state.questions.length) {
+    alert('No questions to export!');
+    return;
+  }
+
+  const csv = Papa.unparse(state.questions, {
+    quotes: true,
+    quoteChar: '"',
+    escapeChar: '"',
+    newline: "\r\n"
+  });
+
   const BOM = '\uFEFF';
-  const blob = new Blob([BOM + csvBody], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='studypro_questions.csv'; a.click(); URL.revokeObjectURL(url);
+  const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'studypro_questions.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 });
 
 // Fetch from GitHub database branch
@@ -161,23 +173,19 @@ els.fetchFromGithubBtn.addEventListener('click', async ()=> {
   alert(`Fetched ${total} questions from GitHub (database branch).`);
 });
 
-// PDF viewer modal open
+// PDF viewer modal
 els.openPdfViewerBtn.addEventListener('click', ()=> {
   els.pdfModal.style.display = 'flex';
   els.pdfViewerContainer.innerHTML = '<div style="padding:10px;color:var(--muted)">Choose a PDF using the file chooser below or drag & drop a PDF into this area.</div>';
 });
 
-// close modal
 els.closePdfModal.addEventListener('click', ()=> { els.pdfModal.style.display = 'none'; els.pdfViewerContainer.innerHTML = ''; });
 
-// pdf file input handling
 els.pdfFileInput.addEventListener('change', async (e)=> { const f = e.target.files[0]; if(!f) return; const buf = await f.arrayBuffer(); renderPDFIntoContainer(buf, els.pdfViewerContainer); });
 
-// drag & drop
 els.pdfViewerContainer.addEventListener('dragover', (ev)=> { ev.preventDefault(); ev.dataTransfer.dropEffect = 'copy'; });
 els.pdfViewerContainer.addEventListener('drop', async (ev)=> { ev.preventDefault(); const f = ev.dataTransfer.files[0]; if(!f) return; const buf = await f.arrayBuffer(); renderPDFIntoContainer(buf, els.pdfViewerContainer); });
 
-// Render PDF using PDF.js
 async function renderPDFIntoContainer(arrayBuffer, container){
   container.innerHTML = '';
   const loadingTask = pdfjsLib.getDocument({data:arrayBuffer});
@@ -192,13 +200,11 @@ async function renderPDFIntoContainer(arrayBuffer, container){
     const textContent = await page.getTextContent();
     const textLayerDiv = document.createElement('div'); textLayerDiv.className='pdf-textLayer';
     pageDiv.appendChild(canvas); pageDiv.appendChild(textLayerDiv); container.appendChild(pageDiv);
-    // render text layer
     pdfjsLib.renderTextLayer({ textContent, container: textLayerDiv, viewport, textDivs: [] });
   }
   container.scrollTop = 0;
 }
 
-// Add selected text from PDF viewer
 els.addSelectedTextBtn.addEventListener('click', ()=> {
   const sel = window.getSelection().toString().trim();
   if(!sel) return alert('No text selected in the PDF viewer. Select text with mouse first.');
@@ -210,7 +216,7 @@ els.addSelectedTextBtn.addEventListener('click', ()=> {
   els.pdfModal.style.display = 'none';
 });
 
-// Generator with Computer MCQ-only enforcement and horizontal line under subject title
+// Generator
 els.generateBtn.addEventListener('click', async ()=> {
   if(!state.questions.length) return alert('Add some questions first');
   const filterRarity = els.includeRarity.value;
@@ -227,7 +233,6 @@ els.generateBtn.addEventListener('click', async ()=> {
   const grouped = {};
   questions.forEach(q => { const s = q.section || 'A'; if(!grouped[s]) grouped[s]=[]; grouped[s].push(q); });
 
-  // jsPDF with optional Gujarati font
   const fontUrl = '/fonts/NotoSansGujarati-Regular.ttf';
   let fontBuffer = null;
   try{ fontBuffer = await fetch(fontUrl).then(r=>r.arrayBuffer()); }catch(e){ fontBuffer=null; }
@@ -243,7 +248,6 @@ els.generateBtn.addEventListener('click', async ()=> {
   let y = 60;
   doc.setFontSize(18);
   doc.text((subjectInput || 'CLASS12').toUpperCase(), pageWidth/2, y, {align:'center'});
-  // horizontal line under subject title
   const lineY = y + 6;
   doc.setLineWidth(0.7);
   doc.line(40, lineY, pageWidth - 40, lineY);
