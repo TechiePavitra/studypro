@@ -1,11 +1,3 @@
-/* app/app_v3.js - v3 features:
-   - Horizontal line under subject title in generated PDF
-   - Fix CSV export bug (explicit headers + BOM)
-   - Auto-fetch CSVs from GitHub 'database' branch for configured subjects
-   - PDF viewer with selectable text
-   - Computer subject MCQ-only enforcement
-*/
-
 const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/TechiePavitra/studypro/database'; // branch 'database'
 const SUBJECTS = ['economics','gujarati','sanskrit','english','psychology','philosophy','computer'];
 
