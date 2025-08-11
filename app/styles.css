@@ -30,3 +30,45 @@ button{background:var(--accent);border:none;color:#fff;padding:8px 12px;border-r
 .pdf-canvas{width:100%;height:auto;display:block}
 .pdf-textLayer{position:absolute;left:6px;top:6px;right:6px;bottom:6px;pointer-events:auto}
 .modal-footer{display:flex;gap:8px;align-items:center;justify-content:flex-end}
+
+/* Mobile Responsive Fix */
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .navbtn {
+    flex: 1 1 100%;
+    margin: 2px 0;
+    text-align: center;
+  }
+
+  .right {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  .panel {
+    margin: 5px;
+    padding: 8px;
+  }
+
+  textarea, input {
+    width: 100% !important;
+  }
+
+  .footer {
+    font-size: 12px;
+    padding: 5px;
+  }
+}
+
