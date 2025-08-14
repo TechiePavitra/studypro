@@ -1,128 +1,204 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>StudyPro</title>
-
-  <link rel="icon" href="assets/icon.png" />
+  <link rel="icon" href="assets/icon.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="app/styles.css" />
-
-  <!-- Libraries from CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <!-- PDF.js for extracting text from digital PDFs -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
+  <!-- Lightweight libs -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.pdfjsLib) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+      }
+    });
+  </script>
+  <script src="app/webapp.js" defer></script>
 </head>
 <body>
-  <div id="app">
-    <header class="topbar">
-      <img src="assets/icon.png" alt="logo" class="logo">
-      <h1>StudyPro</h1>
-      <div class="spacer"></div>
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/icon.png" class="logo" alt="StudyPro icon" />
+      <div class="brand-name">StudyPro</div>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn" data-target="manager" aria-label="Question Manager">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        <span>Manager</span>
+      </button>
+      <button class="nav-btn" data-target="generator" aria-label="Paper Generator">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 3v5h5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <span>Generator</span>
+      </button>
+      <button class="nav-btn" data-target="importer" aria-label="PDF Importer">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M4 4h9l5 5v11a1 1 0 0 1-1 1H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 4v5h5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <span>Importer</span>
+      </button>
+      <button class="nav-btn" data-target="dashboard" aria-label="Dashboard">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M3 12h6v9H3zM10 3h4v18h-4zM16 8h5v13h-5z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <span>Dashboard</span>
+      </button>
+    </nav>
+    <div class="spacer"></div>
+    <div class="actions">
+      <button id="btnImportCSV" class="pill" title="Import CSV">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <button id="btnExportCSV" class="pill" title="Export CSV">
+        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 21V9m0 0l-4 4m4-4l4 4M5 3h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <input id="csvInput" type="file" accept=".csv" hidden />
+    </div>
+  </header>
 
-      <input type="file" id="topCsvInput" accept=".csv" style="display:none">
-      <button id="importCsvTopBtn" title="Import CSV">Import CSV</button>
-      <button id="downloadCsvBtn">Export CSV</button>
-      <button id="fetchFromGithubBtn" title="Load from GitHub">Load from GitHub</button>
-    </header>
-
-    <main class="split">
-      <section class="left">
-        <h2>Question Manager</h2>
-        <div class="controls">
-          <select id="subjectSelect">
-            <option value="economics">Economics</option>
-            <option value="gujarati">Gujarati</option>
-            <option value="sanskrit">Sanskrit</option>
-            <option value="english">English</option>
-            <option value="psychology">Psychology</option>
-            <option value="philosophy">Philosophy</option>
-            <option value="computer">Computer</option>
-          </select>
-
-          <select id="typeSelect">
-            <option value="paragraph">Paragraph</option>
-            <option value="mcq">MCQ</option>
-            <option value="diagram">Diagram</option>
-          </select>
-
-          <select id="raritySelect">
-            <option value="most imp">Most IMP</option>
-            <option value="sometimes">Sometimes</option>
-            <option value="rarely">Rarely</option>
-          </select>
-
-          <select id="sectionSelect">
-            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
-          </select>
+  <main class="wrap">
+    <!-- Question Manager -->
+    <section id="manager" class="panel active">
+      <h2 class="title">Question Manager</h2>
+      <div class="grid two">
+        <div class="card">
+          <div class="row">
+            <label>Subject</label>
+            <select id="subjectSelect" class="select">
+              <option>Economics</option>
+              <option>Gujarati</option>
+              <option>Sanskrit</option>
+              <option>English</option>
+              <option>Psychology</option>
+              <option>Philosophy</option>
+              <option>Computer</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Type</label>
+            <select id="typeSelect" class="select">
+              <option value="paragraph">Paragraph</option>
+              <option value="mcq">MCQ</option>
+              <option value="diagram">Diagram</option>
+            </select>
+          </div>
+          <div id="mcqOptions" class="mcq-grid" style="display:none">
+            <input id="optA" class="input" placeholder="Option A" />
+            <input id="optB" class="input" placeholder="Option B" />
+            <input id="optC" class="input" placeholder="Option C" />
+            <input id="optD" class="input" placeholder="Option D" />
+          </div>
+          <div class="row">
+            <label>Rarity</label>
+            <select id="raritySelect" class="select">
+              <option value="most">Most IMP</option>
+              <option value="common">Common</option>
+              <option value="rare">Rarely</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Section</label>
+            <select id="sectionSelect" class="select">
+              <option>A</option><option>B</option><option>C</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Question</label>
+            <div class="editor">
+              <div class="toolbar">
+                <button type="button" class="tbtn" data-wrap="**" title="Bold"><b>B</b></button>
+                <button type="button" class="tbtn" data-wrap="*" title="Italic"><i>I</i></button>
+                <button type="button" class="tbtn" data-wrap="__" title="Underline"><u>U</u></button>
+              </div>
+              <textarea id="questionText" class="textarea" placeholder="Write question or paste extracted text"></textarea>
+              <div class="hint">Formatting uses Markdown (**bold**, *italic*, __underline__). Stored in CSV as text.</div>
+            </div>
+          </div>
+          <div class="buttons">
+            <button id="addQuestionBtn" class="btn primary">Add Question</button>
+            <button id="viewAllBtn" class="btn">View All Questions</button>
+          </div>
+          <div id="preview" class="muted tiny">0 questions</div>
         </div>
-
-        <textarea id="questionText" placeholder="Write question or paste extracted text"></textarea>
-
-        <div id="mcqOptions" class="mcq-grid" style="display:none">
-          <input placeholder="Option A" id="optA">
-          <input placeholder="Option B" id="optB">
-          <input placeholder="Option C" id="optC">
-          <input placeholder="Option D" id="optD">
-        </div>
-
-        <div class="buttons">
-          <button id="addQuestionBtn">Add Question</button>
-          <button id="openPdfViewerBtn">Import PDF (select text)</button>
-          <input type="file" id="csvInput" accept=".csv" style="display:none">
-        </div>
-
-        <h3>Questions (<span id="qcount">0</span>)</h3>
-        <ul id="questionList" class="question-list"></ul>
-      </section>
-
-      <section class="right">
-        <h2>Paper Generator</h2>
-
-        <label>Paper Subject
-          <input id="paperSubject" value="Economics">
-        </label>
-
-        <label>Marks
-          <input id="paperMarks" value="100">
-        </label>
-
-        <label>Include rarities
-          <select id="includeRarity">
-            <option value="all">All</option>
-            <option value="most imp">Most IMP only</option>
-            <option value="sometimes">Sometimes only</option>
-            <option value="rarely">Rarely only</option>
-          </select>
-        </label>
-
-        <div class="buttons">
-          <button id="generateBtn">Generate Paper (PDF)</button>
-        </div>
-
-        <h3>Preview</h3>
-        <div id="preview" class="preview-box">No preview yet.</div>
-      </section>
-    </main>
-
-    <!-- PDF Viewer Modal -->
-    <div id="pdfModal" class="modal" style="display:none">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>PDF Viewer — Select text and click "Add Selected Text"</h3>
-          <button id="closePdfModal">Close</button>
-        </div>
-        <div id="pdfViewerContainer" class="pdf-viewer-container"></div>
-        <div class="modal-footer">
-          <button id="addSelectedTextBtn">Add Selected Text</button>
-          <input type="file" id="pdfFileInput" accept="application/pdf">
+        <div class="card">
+          <h3>About StudyPro</h3>
+          <p>StudyPro is an open-source tool by <strong>TechiePavitra</strong> for GSEB 12th (Gujarati Medium). It generates real exam-style PDFs and auto-loads your question database from GitHub.</p>
+          <p><em>Idea by Karan</em></p>
         </div>
       </div>
+    </section>
+
+    <!-- Paper Generator -->
+    <section id="generator" class="panel">
+      <h2 class="title">Paper Generator</h2>
+      <div class="card">
+        <div class="grid three">
+          <div class="row"><label>Paper Subject</label><input id="paperSubject" class="input" placeholder="Economics" /></div>
+          <div class="row"><label>Total Marks</label><input id="paperMarks" class="input" value="100" /></div>
+          <div class="row"><label>Duration (hrs)</label><input id="paperDuration" class="input" value="3" /></div>
+        </div>
+        <div class="grid three">
+          <div class="row"><label>Exam Date</label><input id="paperDate" class="input" type="date" /></div>
+          <div class="row"><label>Include (rarity)</label>
+            <select id="includeRarity" class="select">
+              <option value="all">All</option>
+              <option value="most">Most IMP</option>
+              <option value="common">Common</option>
+              <option value="rare">Rarely</option>
+            </select>
+          </div>
+          <div class="row"><label>&nbsp;</label><button id="generateBtn" class="btn primary">Generate PDF</button></div>
+        </div>
+        <div class="muted tiny">Computer subject generates MCQs only.</div>
+      </div>
+    </section>
+
+    <!-- PDF Importer -->
+    <section id="importer" class="panel">
+      <h2 class="title">PDF Importer</h2>
+      <div class="card">
+        <div class="importer-controls">
+          <input type="file" id="pdfFileInput" accept="application/pdf" />
+          <button id="addSelectedTextBtn" class="btn">Add Selected Text</button>
+        </div>
+        <div id="pdfViewerContainer" class="pdf-viewer-container">
+          <div class="placeholder">Open a PDF and select text to import…</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard (last) -->
+    <section id="dashboard" class="panel">
+      <h2 class="title">Dashboard</h2>
+      <div class="grid two">
+        <div class="card">
+          <div class="metric-title">Papers Generated</div>
+          <div id="papersCount" class="metric">0</div>
+          <div class="chart-wrap"><canvas id="papersChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="metric-title">Questions Added</div>
+          <div id="questionsCount" class="metric">0</div>
+          <div class="chart-wrap"><canvas id="questionsChart"></canvas></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- All Questions Modal -->
+  <div id="allModal" class="modal" style="display:none">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="title">All Questions</div>
+        <button id="closeAllModal" class="pill">✕</button>
+      </div>
+      <div class="modal-body">
+        <input id="searchAll" class="input" placeholder="Search…" />
+        <div id="allList" class="all-list"></div>
+      </div>
     </div>
-
   </div>
-
-  <script src="app/webapp.js"></script>
 </body>
 </html>
