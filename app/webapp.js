@@ -277,7 +277,7 @@ function setupGenerator(){
 
     let y = 64;
     doc.setFontSize(18);
-    doc.text('Gujarat Secondary and Higher Secondary Education Board', w/2, y, {align:'center'});
+    doc.text('StudyPro', w/2, y, {align:'center'});
     y += 22;
     doc.setFontSize(15);
     doc.text(subject.toUpperCase(), w/2, y, {align:'center'});
