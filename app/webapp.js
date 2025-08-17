@@ -267,7 +267,8 @@ function setupGenerator(){
 
     await loadRasaFont();
 
-    const subject = (els.paperSubject.value||'').trim() || 'Subject';
+    // Use subject from paperSubject, fallback to subjectSelect, fallback to 'Subject'
+    const subject = (els.paperSubject.value||'').trim() || (els.subjectSelect && els.subjectSelect.value) || 'Subject';
     const marks = els.paperMarks.value || '100';
     const duration = els.paperDuration.value || '3';
     const dateStr = els.paperDate.value || new Date().toISOString().slice(0,10);
@@ -304,7 +305,7 @@ function setupGenerator(){
     doc.setFontSize(18);
     doc.text('StudyPro', w/2, y, {align:'center'});
     y += 22;
-    // Main heading: Subject
+    // Main heading: Subject Name (not literal 'Subject')
     doc.setFontSize(15);
     doc.text(String(subject).toUpperCase(), w/2, y, {align:'center'});
     y += 16;
