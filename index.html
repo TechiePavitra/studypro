@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="app/styles.css" />
 
-  <!-- Font Awesome (classic regular style) -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
   <!-- Lightweight libs -->
@@ -35,7 +35,7 @@
     <nav class="nav">
       <!-- Home -->
       <button class="nav-btn" data-target="home" aria-label="Home">
-        <i class="fa-regular fa-house ico" aria-hidden="true"></i>
+        <i class="fa-solid fa-house ico" aria-hidden="true"></i>
         <span>Home</span>
       </button>
       <!-- Manager -->
@@ -62,10 +62,10 @@
     <div class="spacer"></div>
     <div class="actions">
       <button id="btnImportCSV" class="pill" title="Import CSV">
-        <i class="fa-regular fa-file-arrow-up ico" aria-hidden="true"></i>
+        <i class="fa-solid fa-file-arrow-up ico" aria-hidden="true"></i>
       </button>
       <button id="btnExportCSV" class="pill" title="Export CSV">
-        <i class="fa-regular fa-file-arrow-down ico" aria-hidden="true"></i>
+        <i class="fa-solid fa-file-arrow-down ico" aria-hidden="true"></i>
       </button>
       <input id="csvInput" type="file" accept=".csv" hidden />
     </div>
@@ -76,30 +76,14 @@
     <!-- Home Panel -->
     <section id="home" class="panel active">
       <h2 class="title">Welcome to StudyPro</h2>
-      <div class="grid two">
-        <div class="card">
-          <h3>Quick Actions</h3>
-          <div class="buttons">
-            <button class="btn" data-target="manager">
-              <i class="fa-regular fa-folder-open"></i> Question Manager
-            </button>
-            <button class="btn" data-target="generator">
-              <i class="fa-regular fa-file-lines"></i> Paper Generator
-            </button>
-            <button class="btn" data-target="importer">
-              <i class="fa-regular fa-file-pdf"></i> PDF Importer
-            </button>
-            <button class="btn" data-target="dashboard">
-              <i class="fa-regular fa-chart-bar"></i> Dashboard
-            </button>
-          </div>
-        </div>
-        <div class="card">
-          <h3>About StudyPro</h3>
-          <p>StudyPro is an open-source tool by <strong>TechiePavitra</strong> for GSEB 12th (Gujarati Medium).  
-          It generates real exam-style PDFs and auto-loads your question database from GitHub.</p>
-          <p><em>Idea by Karan</em></p>
-        </div>
+      <div class="card">
+        <h3>About StudyPro</h3>
+        <p>
+          StudyPro is an open-source tool by <strong>TechiePavitra</strong> for GSEB 12th (Gujarati Medium).  
+          It helps you manage your question bank, generate exam-style PDFs,  
+          import questions from PDFs, and track your study progress.
+        </p>
+        <p><em>Idea by Karan</em></p>
       </div>
     </section>
 
