@@ -1,46 +1,31 @@
-# PROGRAM UNDER DEVELOPEMENT!
-<p align="center">
-  <img src="assets/icon.png" alt="StudyPro Logo" height="80">
-</p>
+# StudyPro
 
-<strong>
-<h1 align="center">StudyPro</h1>
-</strong>
+Lightweight, modern, mobile-ready question paper generator for GSEB 12th (Gujarati Medium).  
+- Minimal rounded UI + animations
+- Question Manager with **bold/italic/underline** (Markdown-compatible)
+- PDF Importer with selectable text (PDF.js)
+- Auto-load questions from GitHub `database` branch for subjects
+- Exam-style PDF with horizontal line and Rasa font support (swap `/fonts/NotoSansGujarati-Regular.ttf` with your Rasa font)
+- Dashboard (last tab) with charts
+- Computer subject => MCQ-only paper
 
-<p align="center">
-  ✨ A modern program for studies, this program helps students for their preparation, clean, and open-source Class 12 Gujarati Medium Question Paper Generator and Manager built with Python, HTML, CSS, and JavaScript.
-</p>
-
-##
-
-## 🌟 Features
-
-- 📝 Generate question papers by subject and section
-- 📋 Manage and import questions from PDFs or CSV (coming soon)
-- 🧠 Supports Gujarati & English language content
-- 💠 Neumorphism-based modern UI/UX
-- 🧪 GitHub Pages ready – host directly from your repo!
-- 🔁 "Add Question" feature (PR-based) for contributors (coming soon)
-
-
-## 📁 Folder Structure
+## File structure
 ```
-studypro/
-├── index.html
-├── style.css
-├── README.md
-└── app/
-├── app.js
-├── questionmanager.html
-└── papergenerator.html
+app/
+  styles.css
+  webapp.js
+assets/
+  icon.png
+  IconLicence.txt
+data/
+  sample_economics.csv
+fonts/
+  NotoSansGujarati-Regular.ttf   # replace this with Rasa font file
+index.html
+README.md
 ```
----
 
-## 🚀 How to Use
-
-1. **Clone the repo:**
-   ```bash
-   git clone https://github.com/yourusername/studypro.git
-   cd studypro
-
-
+## Notes
+- CSV header: `question,type,options,rarity,section,subject`
+- Export uses UTF‑8 BOM for Gujarati compatibility.
+- GitHub DB loads async (after first paint) for fast initial UI.
