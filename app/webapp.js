@@ -1,6 +1,6 @@
 // StudyPro - webapp.js
 // Structure kept: app/, assets/, data/, fonts/
-// No emojis; inline SVG only. Dashboard last. Rasa font-ready.
+// Rasa Font - Bug Fixed Version
 
 const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/TechiePavitra/studypro/database';
 const SUBJECTS = ['economics','gujarati','sanskrit','english','psychology','philosophy','computer'];
@@ -35,6 +35,7 @@ const state = {
   loadedFromGithub: false,
 };
 
+// ---------- Init ----------
 document.addEventListener('DOMContentLoaded', () => {
   bindEls();
   setupNav();
@@ -44,8 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
   setupGenerator();
   setupModal();
   // initial panel = Manager for speed
-  document.querySelector('.nav-btn[data-target="manager"]').classList.add('active');
-  document.getElementById('manager').classList.add('active');
+  const mgrBtn = document.querySelector('.nav-btn[data-target="manager"]');
+  if (mgrBtn) mgrBtn.classList.add('active');
+  const mgrPanel = document.getElementById('manager');
+  if (mgrPanel) mgrPanel.classList.add('active');
   // defer DB load so first paint is quick
   setTimeout(autoFetchDatabase, 50);
   // init charts after a tick
@@ -54,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCountsUI();
 });
 
+// ---------- Binding ----------
 function bindEls(){
   els.navBtns = document.querySelectorAll('.nav-btn');
   els.panels = document.querySelectorAll('.panel');
@@ -95,6 +99,7 @@ function bindEls(){
   els.questionsCount = document.getElementById('questionsCount');
 }
 
+// ---------- Navigation ----------
 function setupNav(){
   els.navBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -107,6 +112,7 @@ function setupNav(){
   });
 }
 
+// ---------- Question Manager ----------
 function setupManager(){
   els.typeSelect.addEventListener('change', () => {
     els.mcqOptions.style.display = els.typeSelect.value === 'mcq' ? '' : 'none';
@@ -145,6 +151,7 @@ function setupManager(){
   document.getElementById('viewAllBtn').addEventListener('click', openAllModal);
 }
 
+// ---------- CSV Import/Export ----------
 function setupCSV(){
   els.btnImportCSV.addEventListener('click', () => els.csvInput.click());
   els.csvInput.addEventListener('change', (e) => {
@@ -184,6 +191,7 @@ function normalizeRow(row){
 }
 function guessSubjectFromContext(){ return els.subjectSelect ? els.subjectSelect.value : 'General'; }
 
+// ---------- PDF Importer ----------
 function setupImporter(){
   els.pdfFileInput.addEventListener('change', async (e) => {
     const f = e.target.files[0]; if(!f) return;
@@ -221,9 +229,10 @@ async function renderPDF(arrayBuffer, container){
   container.scrollTop = 0;
 }
 
+// ---------- Modal ----------
 function setupModal(){
-  els.closeAllModal.addEventListener('click', ()=> els.allModal.style.display='none');
-  els.searchAll.addEventListener('input', listAll);
+  if (els.closeAllModal) els.closeAllModal.addEventListener('click', ()=> els.allModal.style.display='none');
+  if (els.searchAll) els.searchAll.addEventListener('input', listAll);
 }
 function openAllModal(){ els.allModal.style.display='flex'; listAll(); }
 function listAll(){
@@ -239,10 +248,26 @@ function listAll(){
   });
 }
 
+// ---------- PDF Font Loader (Rasa) ----------
+let rasaFontBase64 = null;
+async function loadRasaFont(){
+  if (rasaFontBase64) return;
+  try {
+    const res = await fetch('fonts/Rasa-Regular.ttf'); // ensure this path exists in your project
+    if (!res.ok) throw new Error('Font fetch failed');
+    const buf = await res.arrayBuffer();
+    rasaFontBase64 = arrayBufferToBase64(new Uint8Array(buf));
+  } catch(e){ console.error('Rasa font load error', e); }
+}
+
+// ---------- Paper Generator ----------
 function setupGenerator(){
   els.generateBtn.addEventListener('click', async () => {
     if(!state.questions.length) return alert('No questions available');
-    const subject = (els.paperSubject.value||'').trim() || 'GSEB Class 12';
+
+    await loadRasaFont();
+
+    const subject = (els.paperSubject.value||'').trim() || 'Subject';
     const marks = els.paperMarks.value || '100';
     const duration = els.paperDuration.value || '3';
     const dateStr = els.paperDate.value || new Date().toISOString().slice(0,10);
@@ -265,31 +290,39 @@ function setupGenerator(){
     const w = doc.internal.pageSize.getWidth();
     const h = doc.internal.pageSize.getHeight();
 
-    // Always use Rasa font
-    try{
-    const base64 = arrayBufferToBase64(new Uint8Array(buf));
-    doc.addFileToVFS('Rasa-Regular.ttf', base64);
-    // Force Unicode (CID) encoding
-    doc.addFont('Rasa-Regular.ttf', 'Rasa', 'normal', 'Identity-H');
-    doc.setFont('Rasa');
-
-    }catch{}
+    // Register & use Rasa font for THIS doc instance
+    if (rasaFontBase64) {
+      try {
+        doc.addFileToVFS('Rasa-Regular.ttf', rasaFontBase64);
+        doc.addFont('Rasa-Regular.ttf', 'Rasa', 'normal');
+        doc.setFont('Rasa', 'normal');
+      } catch(err){ console.warn('Failed to register Rasa in jsPDF doc', err); }
+    }
 
     let y = 64;
+    // Title
     doc.setFontSize(18);
     doc.text('StudyPro', w/2, y, {align:'center'});
     y += 22;
+    // Main heading: Subject
     doc.setFontSize(15);
-    doc.text(subject.toUpperCase(), w/2, y, {align:'center'});
+    doc.text(String(subject).toUpperCase(), w/2, y, {align:'center'});
+    y += 16;
+    // Sub heading: Standard 12th (as requested)
+    doc.setFontSize(12);
+    doc.text('Standard 12th', w/2, y, {align:'center'});
     y += 8;
+    // Divider
     doc.setLineWidth(0.8); doc.line(40, y, w-40, y); y += 16;
 
+    // Meta row
     doc.setFontSize(11);
     doc.text(`Date: ${formatDate(dateStr)}`, 40, y);
     doc.text(`Time: ${duration} Hours`, w/2, y, {align:'center'});
     doc.text(`Total Marks: ${marks}`, w-40, y, {align:'right'});
     y += 22;
 
+    // Instructions
     doc.setFontSize(10);
     const inst = [
       '• Read all questions carefully.',
@@ -297,14 +330,19 @@ function setupGenerator(){
     ];
     doc.text(inst, 48, y); y += inst.length*14 + 6;
 
+    // Body
     let qn = 1;
-    for(const sec of Object.keys(grouped).sort()){
+    const sections = Object.keys(grouped).sort();
+    for(const sec of sections){
       doc.setFontSize(12);
       doc.text(`Section ${sec}`, w/2, y, {align:'center'});
       y += 14;
       doc.setFontSize(11);
       for(const q of grouped[sec]){
-        const cleanQ = (q.question||'').replace(/\((?:most|common|rare)[^\)]*\)/ig,'').replace(/\b(most\s*imp)\b/ig,'').trim();
+        const cleanQ = (q.question||'')
+          .replace(/\((?:most|common|rare)[^\)]*\)/ig,'')
+          .replace(/\b(most\s*imp)\b/ig,'')
+          .trim();
         const lines = doc.splitTextToSize(`${qn}. ${cleanQ}`, w-88);
         if (y + lines.length*14 > h - 64){ doc.addPage(); y = 64; }
         doc.text(lines, 48, y); y += lines.length*14;
@@ -316,7 +354,7 @@ function setupGenerator(){
             if (y + line.length*14 > h - 64){ doc.addPage(); y = 64; }
             doc.text(line, 68, y); y += line.length*14;
           }
-        }else if(q.type==='diagram'){
+        } else if(q.type==='diagram'){
           if (y + 18 > h - 64){ doc.addPage(); y = 64; }
           doc.text('(Draw a neat labelled diagram.)', 68, y); y += 18;
         }
@@ -324,7 +362,10 @@ function setupGenerator(){
       }
       y += 6;
     }
-    doc.save(`${subject.replace(/\s+/g,'_')}_paper.pdf`);
+
+    // Filename: Subject_StudyPro.pdf (requested)
+    const safeSubject = String(subject).trim().replace(/\s+/g,'_') || 'Subject';
+    doc.save(`${safeSubject}_StudyPro.pdf`);
     bumpPapersStat();
     updateCountsUI();
   });
@@ -335,6 +376,7 @@ function arrayBufferToBase64(buf){
 }
 function formatDate(s){ try{ const d=new Date(s); return d.toLocaleDateString(); }catch{ return s; }}
 
+// ---------- Auto DB Fetch ----------
 async function autoFetchDatabase(){
   if(state.loadedFromGithub) return; state.loadedFromGithub = true;
   let added = 0;
@@ -360,7 +402,7 @@ function renderPreview(){
   const byS = {};
   state.questions.forEach(q => byS[q.subject] = (byS[q.subject]||0)+1);
   const parts = Object.entries(byS).map(([s,c])=>`${s}: ${c}`);
-  els.preview.textContent = `${state.questions.length} questions · ${parts.join(' · ')}`;
+  if (els.preview) els.preview.textContent = `${state.questions.length} questions · ${parts.join(' · ')}`;
 }
 
 // ---------- Dashboard ----------
@@ -381,8 +423,8 @@ function initCharts(){
   });
 }
 function updateCountsUI(){
-  els.papersCount.textContent = state.stats.papersGenerated;
-  els.questionsCount.textContent = state.stats.questionsAdded;
+  if (els.papersCount) els.papersCount.textContent = state.stats.papersGenerated;
+  if (els.questionsCount) els.questionsCount.textContent = state.stats.questionsAdded;
   if(papersChart) papersChart.update();
   if(questionsChart) questionsChart.update();
 }
