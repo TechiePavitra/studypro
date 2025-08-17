@@ -102,9 +102,33 @@ body{font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);color:var
 @keyframes pop{from{transform:scale(.98)}to{transform:scale(1)}}
 
 /* Responsive */
-@media(max-width:900px){
-  .grid.two{grid-template-columns:1fr}
-  .grid.three{grid-template-columns:1fr}
-  .mcq-grid{grid-template-columns:1fr}
-  .nav-btn span{display:none}
+@media (max-width: 1200px) {
+  .wrap { max-width: 98%; }
+}
+
+@media (max-width: 900px) {
+  .grid.two,
+  .grid.three { grid-template-columns: 1fr; }
+  .mcq-grid { grid-template-columns: 1fr; }
+  .nav-btn span { display: none; }
+  .wrap { padding: 0 6px; }
+}
+
+@media (max-width: 600px) {
+  .topbar { flex-direction: column; align-items: stretch; gap: 6px; padding: 8px 6px; }
+  .brand { justify-content: center; }
+  .nav { flex-wrap: wrap; justify-content: center; }
+  .actions { justify-content: center; }
+  .wrap { padding: 0 2px; }
+  .card, .modal-content, .pdf-viewer-container { padding: 8px; }
+  .modal-content { width: 99%; }
+  .title { font-size: 1.1em; }
+  .btn, .pill { padding: 8px 10px; font-size: 15px; }
+  .input, .select, .textarea { padding: 8px 8px; font-size: 15px; }
+}
+
+@media (max-width: 400px) {
+  .topbar { padding: 4px 2px; }
+  .btn, .pill { padding: 6px 6px; font-size: 14px; }
+  .input, .select, .textarea { padding: 6px 6px; font-size: 14px; }
 }
