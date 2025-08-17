@@ -8,6 +8,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="app/styles.css" />
+
+  <!-- Font Awesome (classic regular style) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
   <!-- Lightweight libs -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
@@ -29,40 +33,80 @@
       <div class="brand-name">StudyPro</div>
     </div>
     <nav class="nav">
+      <!-- Home -->
+      <button class="nav-btn" data-target="home" aria-label="Home">
+        <i class="fa-regular fa-house ico" aria-hidden="true"></i>
+        <span>Home</span>
+      </button>
+      <!-- Manager -->
       <button class="nav-btn" data-target="manager" aria-label="Question Manager">
-        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        <i class="fa-regular fa-folder-open ico" aria-hidden="true"></i>
         <span>Manager</span>
       </button>
+      <!-- Generator -->
       <button class="nav-btn" data-target="generator" aria-label="Paper Generator">
-        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 3v5h5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <i class="fa-regular fa-file-lines ico" aria-hidden="true"></i>
         <span>Generator</span>
       </button>
+      <!-- Importer -->
       <button class="nav-btn" data-target="importer" aria-label="PDF Importer">
-        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M4 4h9l5 5v11a1 1 0 0 1-1 1H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 4v5h5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <i class="fa-regular fa-file-pdf ico" aria-hidden="true"></i>
         <span>Importer</span>
       </button>
+      <!-- Dashboard -->
       <button class="nav-btn" data-target="dashboard" aria-label="Dashboard">
-        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M3 12h6v9H3zM10 3h4v18h-4zM16 8h5v13h-5z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <i class="fa-regular fa-chart-bar ico" aria-hidden="true"></i>
         <span>Dashboard</span>
       </button>
     </nav>
     <div class="spacer"></div>
     <div class="actions">
       <button id="btnImportCSV" class="pill" title="Import CSV">
-        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        <i class="fa-regular fa-file-arrow-up ico" aria-hidden="true"></i>
       </button>
       <button id="btnExportCSV" class="pill" title="Export CSV">
-        <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 21V9m0 0l-4 4m4-4l4 4M5 3h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        <i class="fa-regular fa-file-arrow-down ico" aria-hidden="true"></i>
       </button>
       <input id="csvInput" type="file" accept=".csv" hidden />
     </div>
   </header>
 
   <main class="wrap">
-    <!-- Question Manager -->
-    <section id="manager" class="panel active">
-      <h2 class="title">Question Manager</h2>
+
+    <!-- Home Panel -->
+    <section id="home" class="panel active">
+      <h2 class="title">Welcome to StudyPro</h2>
       <div class="grid two">
+        <div class="card">
+          <h3>Quick Actions</h3>
+          <div class="buttons">
+            <button class="btn" data-target="manager">
+              <i class="fa-regular fa-folder-open"></i> Question Manager
+            </button>
+            <button class="btn" data-target="generator">
+              <i class="fa-regular fa-file-lines"></i> Paper Generator
+            </button>
+            <button class="btn" data-target="importer">
+              <i class="fa-regular fa-file-pdf"></i> PDF Importer
+            </button>
+            <button class="btn" data-target="dashboard">
+              <i class="fa-regular fa-chart-bar"></i> Dashboard
+            </button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>About StudyPro</h3>
+          <p>StudyPro is an open-source tool by <strong>TechiePavitra</strong> for GSEB 12th (Gujarati Medium).  
+          It generates real exam-style PDFs and auto-loads your question database from GitHub.</p>
+          <p><em>Idea by Karan</em></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Question Manager -->
+    <section id="manager" class="panel">
+      <h2 class="title">Question Manager</h2>
+      <div class="grid one">
         <div class="card">
           <div class="row">
             <label>Subject</label>
@@ -122,11 +166,6 @@
           </div>
           <div id="preview" class="muted tiny">0 questions</div>
         </div>
-        <div class="card">
-          <h3>About StudyPro</h3>
-          <p>StudyPro is an open-source tool by <strong>TechiePavitra</strong> for GSEB 12th (Gujarati Medium). It generates real exam-style PDFs and auto-loads your question database from GitHub.</p>
-          <p><em>Idea by Karan</em></p>
-        </div>
       </div>
     </section>
 
@@ -169,7 +208,7 @@
       </div>
     </section>
 
-    <!-- Dashboard (last) -->
+    <!-- Dashboard -->
     <section id="dashboard" class="panel">
       <h2 class="title">Dashboard</h2>
       <div class="grid two">
